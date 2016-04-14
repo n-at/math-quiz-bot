@@ -1,6 +1,8 @@
 package ru.doublebyte.mathquizbot.quiz;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -48,6 +50,27 @@ public class QuizTest {
     public void getLevel() throws Exception {
         Quiz quiz = new Quiz(Level.Medium);
         assertEquals(Level.Medium, quiz.getLevel());
+    }
+
+    @Test
+    public void render() {
+        Logger logger = LoggerFactory.getLogger(QuizTest.class);
+        logger.info("Testing quiz output");
+
+        Quiz simpleQuiz = new Quiz(Level.Simple);
+        logger.info("Simple quiz");
+        logger.info(simpleQuiz.getQuizString());
+        simpleQuiz.getQuizVariants().forEach(it -> logger.info(it.toString()));
+
+        Quiz mediumQuiz = new Quiz(Level.Medium);
+        logger.info("Meduim quiz");
+        logger.info(mediumQuiz.getQuizString());
+        mediumQuiz.getQuizVariants().forEach(it -> logger.info(it.toString()));
+
+        Quiz hardQuiz = new Quiz(Level.Hard);
+        logger.info("Hard quiz");
+        logger.info(hardQuiz.getQuizString());
+        hardQuiz.getQuizVariants().forEach(it -> logger.info(it.toString()));
     }
 
 }
