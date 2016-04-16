@@ -3,6 +3,8 @@ package ru.doublebyte.mathquizbot;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.doublebyte.mathquizbot.bot.Bot;
+import ru.doublebyte.mathquizbot.bot.types.QuizBot;
 
 @Configuration
 public class BotConfiguration {
@@ -15,7 +17,7 @@ public class BotConfiguration {
 
     @Bean
     public Bot getBot() {
-        return new Bot(apiUrl, token);
+        return new QuizBot(apiUrl, token);
     }
 
 }
