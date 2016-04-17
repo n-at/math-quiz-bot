@@ -38,8 +38,6 @@ public abstract class Bot {
      * Fetch and process updates from Telegram bot API server
      */
     public void processUpdates() {
-        logger.info("Fetching updates...");
-
         List<Update> updates = getUpdates(lastId, updateLimit, timeout);
 
         lastId = updates.stream()
