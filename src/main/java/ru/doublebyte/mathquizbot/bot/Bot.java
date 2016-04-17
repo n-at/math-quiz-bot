@@ -3,6 +3,7 @@ package ru.doublebyte.mathquizbot.bot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.doublebyte.mathquizbot.bot.types.Message;
 import ru.doublebyte.mathquizbot.bot.types.User;
 import ru.doublebyte.mathquizbot.bot.types.response.GetMeResponse;
@@ -73,13 +74,14 @@ public abstract class Bot {
      */
     protected List<Update> getUpdates(long offset, int limit, int timeout) {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("offset", offset);
-            params.put("limit", limit);
-            params.put("timeout", timeout);
+
+            UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl(methodUrl("getUpdates"))
+                    .queryParam("offset", offset)
+                    .queryParam("limit", limit)
+                    .queryParam("timeout", timeout);
 
             GetUpdatesResponse response = restTemplate.getForObject(
-                    methodUrl("getUpdates"), GetUpdatesResponse.class, params);
+                    uri.build().encode().toUri(), GetUpdatesResponse.class);
 
             if(response == null) {
                 logger.warn("getUpdates null result");
@@ -139,16 +141,16 @@ public abstract class Bot {
      */
     public Message sendMessage(ChatId chatId, String text) {
         try {
-            if(chatId == null || chatId.getId() == null || chatId.getUsername() == null) {
+            if(chatId == null || (chatId.getId() == null && chatId.getUsername() == null)) {
                 throw new Exception("chat_id is null");
             }
 
-            Map<String, Object> params = new HashMap<>();
-            params.put("chat_id", chatId.getId() != null ? chatId.getId() : chatId.getUsername());
-            params.put("text", text);
+            UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl(methodUrl("sendMessage"))
+                    .queryParam("chat_id", chatId.getId() != null ? chatId.getId() : chatId.getUsername())
+                    .queryParam("text", text);
 
             SendMessageResponse response = restTemplate.getForObject(
-                    methodUrl("sendMessage"), SendMessageResponse.class, params);
+                    uri.build().encode().toUri(), SendMessageResponse.class);
 
             if(response == null) {
                 logger.warn("sendMessage null response");
@@ -162,7 +164,7 @@ public abstract class Bot {
 
             return response.getResult();
         } catch(Exception e) {
-            logger.error("sendMessage error", e);
+            logger.error("sendMessage failed", e);
             return null;
         }
     }

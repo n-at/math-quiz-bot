@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.doublebyte.mathquizbot.bot.types.Message;
 import ru.doublebyte.mathquizbot.bot.types.Update;
+import ru.doublebyte.mathquizbot.bot.types.mediaentity.Chat;
+import ru.doublebyte.mathquizbot.bot.types.util.ChatId;
 import ru.doublebyte.mathquizbot.quiz.Quiz;
 
 import java.util.Collections;
@@ -29,7 +31,8 @@ public class QuizBot extends Bot {
     protected void processUpdate(Update update) {
         if(update.getMessage() != null) {
             Message message = update.getMessage();
-
+            Chat chat = message.getChat();
+            sendMessage(new ChatId(chat.getId()), "Your message: " + message.getText());
         }
     }
 }
