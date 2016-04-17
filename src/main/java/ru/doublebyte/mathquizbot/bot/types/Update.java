@@ -24,6 +24,7 @@ public class Update {
     @JsonProperty("callback_query")
     private CallbackQuery callbackQuery;
 
+    ///////////////////////////////////////////////////////////////////////////
 
     public long getId() {
         return id;
