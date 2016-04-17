@@ -10,10 +10,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.doublebyte.mathquizbot.bot.types.Message;
 import ru.doublebyte.mathquizbot.bot.types.User;
+import ru.doublebyte.mathquizbot.bot.types.response.EditMessageTextResponse;
 import ru.doublebyte.mathquizbot.bot.types.response.GetMeResponse;
 import ru.doublebyte.mathquizbot.bot.types.response.GetUpdatesResponse;
 import ru.doublebyte.mathquizbot.bot.types.Update;
 import ru.doublebyte.mathquizbot.bot.types.response.SendMessageResponse;
+import ru.doublebyte.mathquizbot.bot.types.util.EditMessageTextParams;
 import ru.doublebyte.mathquizbot.bot.types.util.SendMessageParams;
 
 import java.util.*;
@@ -187,6 +189,55 @@ public abstract class Bot {
             return response.getResult();
         } catch(Exception e) {
             logger.error("sendMessage error", e);
+            return null;
+        }
+    }
+
+    /**
+     * Edit message
+     * https://core.telegram.org/bots/api#editmessagetext
+     *
+     * @param params Edit parameters
+     * @return Edited message
+     */
+    public Message editMessageText(EditMessageTextParams params) {
+        try {
+            if(params.getChatId() == null) {
+                throw new Exception("chat_id is null");
+            }
+
+            if(params.getText() == null) {
+                throw new Exception("text is null");
+            }
+
+            if(params.getMessageId() == null && params.getInlineMessageId() == null) {
+                throw new Exception("message_id is null");
+            }
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String paramsJson = objectMapper.writeValueAsString(params);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> entity = new HttpEntity<>(paramsJson, headers);
+
+            EditMessageTextResponse response = restTemplate.postForObject(
+                    methodUrl("editMessageText"), entity, EditMessageTextResponse.class);
+
+            if(response == null) {
+                logger.warn("editMessageText null response");
+                return null;
+            }
+
+            if(!response.isOk()) {
+                logger.warn("editMessageText error: {} - {}", response.getErrorCode(), response.getDescription());
+                return null;
+            }
+
+            return response.getResult();
+        } catch(Exception e) {
+            logger.error("editMessageText failed", e);
             return null;
         }
     }

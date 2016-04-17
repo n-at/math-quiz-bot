@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.doublebyte.mathquizbot.bot.types.*;
 import ru.doublebyte.mathquizbot.bot.types.mediaentity.Chat;
+import ru.doublebyte.mathquizbot.bot.types.util.EditMessageTextParams;
 import ru.doublebyte.mathquizbot.bot.types.util.SendMessageParams;
 import ru.doublebyte.mathquizbot.quiz.Level;
 import ru.doublebyte.mathquizbot.quiz.Quiz;
@@ -94,15 +95,6 @@ public class QuizBot extends Bot {
         long quizId = quizIdSequence.incrementAndGet();
         quizCollection.put(quizId, quiz);
 
-        //build message
-        StringBuilder message = new StringBuilder();
-        message.append(quiz.getQuizString());
-        message.append("\n\n");
-        for(QuizVariant variant : quiz.getQuizVariants()) {
-            message.append(variant.toString());
-            message.append("\n");
-        }
-
         //build keyboard
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
@@ -120,7 +112,7 @@ public class QuizBot extends Bot {
         //send message
         SendMessageParams messageParams = new SendMessageParams();
         messageParams.setChatId(chatId.toString());
-        messageParams.setText(message.toString());
+        messageParams.setText(buildMessageText(quiz, false));
         messageParams.setReplyMarkup(keyboardMarkup);
         sendMessage(messageParams);
     }
@@ -167,36 +159,40 @@ public class QuizBot extends Bot {
             return;
         }
 
-        if(quiz.isCorrect(variant)) {
-            correctAnswer(chatId, messageId, quizId);
-        } else {
-            incorrectAnswer(chatId, messageId, quizId);
+        //check answer
+        String quizText = buildMessageText(quiz, true) +
+                "\n" +
+                (quiz.isCorrect(variant) ? "Right!" : "No. Try again?");
+
+        EditMessageTextParams editParams = new EditMessageTextParams();
+        editParams.setChatId(chatId.toString());
+        editParams.setMessageId(messageId);
+        editParams.setText(quizText);
+        editParams.setReplyMarkup(new InlineKeyboardMarkup());
+        editMessageText(editParams);
+    }
+
+    /**
+     * Build message text for quiz
+     * @param quiz Quiz
+     * @return Text
+     */
+    protected String buildMessageText(Quiz quiz, boolean markCorrect) {
+        StringBuilder message = new StringBuilder();
+        message.append(quiz.getQuizString());
+        message.append("\n");
+
+        for(QuizVariant variant : quiz.getQuizVariants()) {
+            message.append(variant.toString());
+
+            if(markCorrect && variant.getValue() == quiz.getAnswer()) {
+                message.append(" <-");
+            }
+
+            message.append("\n");
         }
-    }
 
-    /**
-     * Output for incorrect answer
-     * @param chatId Id of chat with quiz message
-     * @param messageId Id of message with quiz
-     * @param quizId Id of quiz
-     */
-    protected void incorrectAnswer(Long chatId, Long messageId, Long quizId) {
-        Quiz quiz = quizCollection.get(quizId);
-        if(quiz == null) return;
-
-        //TODO alter message
-        logger.info("correct");
-    }
-
-    /**
-     * Output for correct answer
-     * @param chatId Id of chat with quiz message
-     * @param messageId Id of message with quiz
-     * @param quizId Id of quiz
-     */
-    protected void correctAnswer(Long chatId, Long messageId, Long quizId) {
-        //TODO alter message
-        logger.info("incorrect");
+        return message.toString();
     }
 
     /**

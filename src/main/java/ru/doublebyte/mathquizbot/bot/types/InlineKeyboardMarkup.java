@@ -3,6 +3,7 @@ package ru.doublebyte.mathquizbot.bot.types;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
 public class InlineKeyboardMarkup {
 
     @JsonProperty("inline_keyboard")
-    private List<List<InlineKeyboardButton>> inlineKeyboard;
+    private List<List<InlineKeyboardButton>> inlineKeyboard = new ArrayList<>();
 
     ///////////////////////////////////////////////////////////////////////////
 
