@@ -1,7 +1,11 @@
 package ru.doublebyte.mathquizbot.bot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.doublebyte.mathquizbot.bot.types.Message;
@@ -10,7 +14,7 @@ import ru.doublebyte.mathquizbot.bot.types.response.GetMeResponse;
 import ru.doublebyte.mathquizbot.bot.types.response.GetUpdatesResponse;
 import ru.doublebyte.mathquizbot.bot.types.Update;
 import ru.doublebyte.mathquizbot.bot.types.response.SendMessageResponse;
-import ru.doublebyte.mathquizbot.bot.types.util.ChatId;
+import ru.doublebyte.mathquizbot.bot.types.util.SendMessageParams;
 
 import java.util.*;
 
@@ -137,18 +141,38 @@ public abstract class Bot {
      * @param text Message
      * @return Sent text
      */
-    public Message sendMessage(ChatId chatId, String text) {
+    public Message sendMessage(String chatId, String text) {
+        return sendMessage(new SendMessageParams(chatId, text));
+    }
+
+    /**
+     * Send message with params
+     * https://core.telegram.org/bots/api#sendmessage
+     *
+     * @param params Send parameters
+     * @return Sent message
+     */
+    public Message sendMessage(SendMessageParams params) {
         try {
-            if(chatId == null || (chatId.getId() == null && chatId.getUsername() == null)) {
+            String chatId = params.getChatId();
+            if(chatId == null) {
                 throw new Exception("chat_id is null");
             }
 
-            UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl(methodUrl("sendMessage"))
-                    .queryParam("chat_id", chatId.getId() != null ? chatId.getId() : chatId.getUsername())
-                    .queryParam("text", text);
+            if(params.getText() == null) {
+                throw new Exception("text is null");
+            }
 
-            SendMessageResponse response = restTemplate.getForObject(
-                    uri.build().encode().toUri(), SendMessageResponse.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String paramsJson = objectMapper.writeValueAsString(params);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> entity = new HttpEntity<>(paramsJson, headers);
+
+            SendMessageResponse response = restTemplate.postForObject(
+                    methodUrl("sendMessage"), entity, SendMessageResponse.class);
 
             if(response == null) {
                 logger.warn("sendMessage null response");
@@ -162,7 +186,7 @@ public abstract class Bot {
 
             return response.getResult();
         } catch(Exception e) {
-            logger.error("sendMessage failed", e);
+            logger.error("sendMessage error", e);
             return null;
         }
     }
