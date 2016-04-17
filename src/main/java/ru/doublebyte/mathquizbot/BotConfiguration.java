@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.doublebyte.mathquizbot.bot.Bot;
-import ru.doublebyte.mathquizbot.bot.types.QuizBot;
+import ru.doublebyte.mathquizbot.bot.QuizBot;
 
 @Configuration
 public class BotConfiguration {

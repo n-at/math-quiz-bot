@@ -1,9 +1,8 @@
-package ru.doublebyte.mathquizbot.bot.types;
+package ru.doublebyte.mathquizbot.bot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.doublebyte.mathquizbot.bot.Bot;
-import ru.doublebyte.mathquizbot.quiz.Quiz;
+import ru.doublebyte.mathquizbot.bot.types.Update;
 
 /**
  * Math quiz bot
