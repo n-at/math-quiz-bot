@@ -149,6 +149,10 @@ public class Quiz {
      * @return Random integer
      */
     private static int getRandomInt(int min, int max) {
+        if(min == max) {
+            return min;
+        }
+
         if(max < min) {
             int t = max;
             max = min;
