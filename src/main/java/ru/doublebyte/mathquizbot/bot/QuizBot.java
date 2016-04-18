@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Math quiz bot
@@ -106,14 +105,11 @@ public class QuizBot extends Bot {
             keyboardRow.add(button);
         }
 
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        keyboardMarkup.setInlineKeyboard(keyboard);
-
         //send message
         SendMessageParams messageParams = new SendMessageParams();
         messageParams.setChatId(chatId.toString());
         messageParams.setText(buildMessageText(quiz, false));
-        messageParams.setReplyMarkup(keyboardMarkup);
+        messageParams.setReplyMarkup(new InlineKeyboardMarkup(keyboard));
         sendMessage(messageParams);
     }
 
@@ -157,7 +153,7 @@ public class QuizBot extends Bot {
         EditMessageTextParams editParams = new EditMessageTextParams();
         editParams.setChatId(chatId.toString());
         editParams.setMessageId(messageId);
-        editParams.setReplyMarkup(new InlineKeyboardMarkup());
+        editParams.setReplyMarkup(InlineKeyboardMarkup.emptyKeyboardMarkup());
 
         Quiz quiz = quizCollection.get(quizId);
         if(quiz != null) {

@@ -13,7 +13,21 @@ import java.util.List;
 public class InlineKeyboardMarkup {
 
     @JsonProperty("inline_keyboard")
-    private List<List<InlineKeyboardButton>> inlineKeyboard = new ArrayList<>();
+    private List<List<InlineKeyboardButton>> inlineKeyboard;
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    public InlineKeyboardMarkup() {
+
+    }
+
+    public InlineKeyboardMarkup(List<List<InlineKeyboardButton>> inlineKeyboard) {
+        this.inlineKeyboard = inlineKeyboard;
+    }
+
+    public static InlineKeyboardMarkup emptyKeyboardMarkup() {
+        return new InlineKeyboardMarkup(new ArrayList<>());
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 
