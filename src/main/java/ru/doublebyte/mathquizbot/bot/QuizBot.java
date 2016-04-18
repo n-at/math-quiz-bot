@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Math quiz bot
@@ -96,14 +97,16 @@ public class QuizBot extends Bot {
 
         //build keyboard
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
+        List<InlineKeyboardButton> keyboardRow = quiz.getQuizVariants()
+                .stream()
+                .map(variant -> {
+                    InlineKeyboardButton button = new InlineKeyboardButton();
+                    button.setText(variant.getName());
+                    button.setCallbackData(quizId.toString() + ":" + variant.getName());
+                    return button;
+                })
+                .collect(Collectors.toList());
         keyboard.add(keyboardRow);
-        for(QuizVariant variant : quiz.getQuizVariants()) {
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(variant.getName());
-            button.setCallbackData(quizId.toString() + ":" + variant.getName());
-            keyboardRow.add(button);
-        }
 
         //send message
         SendMessageParams messageParams = new SendMessageParams();
