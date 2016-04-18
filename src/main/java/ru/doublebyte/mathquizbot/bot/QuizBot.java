@@ -162,6 +162,7 @@ public class QuizBot extends Bot {
         if(quiz != null) {
             editParams.setText(buildMessageText(quiz, true) +
                     (quiz.isCorrect(variant) ? "Right!" : "No. Try again?"));
+            quizCollection.remove(quizId);
         } else {
             editParams.setText(quizNotFoundMessage());
             logger.warn("Quiz not found: {}", quizId);
