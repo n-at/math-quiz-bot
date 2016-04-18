@@ -30,13 +30,13 @@ public class QuizBot extends Bot {
         super(apiUrl, token);
     }
 
-
     /**
      * Process bot update
      * @param update Update object
      */
     @Override
     protected void processUpdate(Update update) {
+        //text message from user with command
         if(update.getMessage() != null) {
             Message messageObj = update.getMessage();
             Chat chat = messageObj.getChat();
@@ -137,9 +137,9 @@ public class QuizBot extends Bot {
         Long chatId = originalMessage.getChat().getId();
 
         String[] parts = answer.split(":");
-
         if(parts.length != 2) {
-            logger.warn("Malformed answer: {}", answer);
+            logger.warn("Malformed answer: {}, chatId: {}, messageId: {}",
+                    answer, chatId, messageId);
             return;
         }
 
@@ -149,31 +149,32 @@ public class QuizBot extends Bot {
             quizId = Long.decode(parts[0]);
             variant = parts[1];
         } catch(Exception e) {
-            logger.warn("Cannot parse answer: " + answer, e);
+            logger.warn("Cannot parse answer ({}): {}, chatId: {}, messageId: {}",
+                    e.getMessage(), answer, chatId, messageId);
             return;
         }
-
-        Quiz quiz = quizCollection.get(quizId);
-        if(quiz == null) {
-            logger.warn("Quiz not found: {}", quizId);
-            return;
-        }
-
-        //check answer
-        String quizText = buildMessageText(quiz, true) +
-                "\n" +
-                (quiz.isCorrect(variant) ? "Right!" : "No. Try again?");
 
         EditMessageTextParams editParams = new EditMessageTextParams();
         editParams.setChatId(chatId.toString());
         editParams.setMessageId(messageId);
-        editParams.setText(quizText);
         editParams.setReplyMarkup(new InlineKeyboardMarkup());
+
+        Quiz quiz = quizCollection.get(quizId);
+        if(quiz != null) {
+            editParams.setText(buildMessageText(quiz, true) +
+                    (quiz.isCorrect(variant) ? "Right!" : "No. Try again?"));
+        } else {
+            editParams.setText(quizNotFoundMessage());
+            logger.warn("Quiz not found: {}", quizId);
+        }
+
         editMessageText(editParams);
     }
 
     /**
      * Build message text for quiz
+     * Mark correct variant when markCorrect flag os set
+     *
      * @param quiz Quiz
      * @return Text
      */
@@ -191,7 +192,6 @@ public class QuizBot extends Bot {
 
             message.append("\n");
         }
-
         return message.toString();
     }
 
@@ -213,5 +213,13 @@ public class QuizBot extends Bot {
      */
     public String wrongCommandMessage() {
         return "Type quiz command or /help for list of commands.";
+    }
+
+    /**
+     * Message when user answers on a quiz that not found
+     * @return Message text
+     */
+    public String quizNotFoundMessage() {
+        return "This problem is no longer available :(";
     }
 }
