@@ -53,7 +53,11 @@ public class Quiz {
                 quiz.append(" + ");
             }
             if(num < 0) {
-                quiz.append(" - ");
+                if(i != 0) {
+                    quiz.append(" - ");
+                } else {
+                    quiz.append("-");
+                }
             }
 
             quiz.append(Math.abs(num));
