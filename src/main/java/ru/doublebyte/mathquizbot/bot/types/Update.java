@@ -15,12 +15,6 @@ public class Update {
     @JsonProperty("message")
     private Message message;
 
-    @JsonProperty("inline_query")
-    private InlineQuery inlineQuery;
-
-    @JsonProperty("chosen_inline_result")
-    private ChosenInlineResult chosenInlineResult;
-
     @JsonProperty("callback_query")
     private CallbackQuery callbackQuery;
 
@@ -40,22 +34,6 @@ public class Update {
 
     public void setMessage(Message message) {
         this.message = message;
-    }
-
-    public InlineQuery getInlineQuery() {
-        return inlineQuery;
-    }
-
-    public void setInlineQuery(InlineQuery inlineQuery) {
-        this.inlineQuery = inlineQuery;
-    }
-
-    public ChosenInlineResult getChosenInlineResult() {
-        return chosenInlineResult;
-    }
-
-    public void setChosenInlineResult(ChosenInlineResult chosenInlineResult) {
-        this.chosenInlineResult = chosenInlineResult;
     }
 
     public CallbackQuery getCallbackQuery() {

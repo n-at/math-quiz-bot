@@ -36,39 +36,6 @@ public class Message {
     @JsonProperty("text")
     private String text;
 
-    @JsonProperty("entities")
-    private List<MessageEntity> entities;
-
-    @JsonProperty("audio")
-    private Audio audio;
-
-    @JsonProperty("document")
-    private Document document;
-
-    @JsonProperty("photo")
-    private List<PhotoSize> photo;
-
-    @JsonProperty("sticker")
-    private Sticker sticker;
-
-    @JsonProperty("video")
-    private Video video;
-
-    @JsonProperty("voice")
-    private Voice voice;
-
-    @JsonProperty("caption")
-    private String caption;
-
-    @JsonProperty("contact")
-    private Contact contact;
-
-    @JsonProperty("location")
-    private Location location;
-
-    @JsonProperty("venue")
-    private Venue venue;
-
     @JsonProperty("new_chat_member")
     private User newChatMember;
 
@@ -77,9 +44,6 @@ public class Message {
 
     @JsonProperty("new_chat_title")
     private String newChatTitle;
-
-    @JsonProperty("new_chat_photo")
-    private List<PhotoSize> newChatPhoto;
 
     @JsonProperty("delete_chat_photo")
     private Boolean deleteChatPhoto;
@@ -168,94 +132,6 @@ public class Message {
         this.text = text;
     }
 
-    public List<MessageEntity> getEntities() {
-        return entities;
-    }
-
-    public void setEntities(List<MessageEntity> entities) {
-        this.entities = entities;
-    }
-
-    public Audio getAudio() {
-        return audio;
-    }
-
-    public void setAudio(Audio audio) {
-        this.audio = audio;
-    }
-
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
-    }
-
-    public List<PhotoSize> getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(List<PhotoSize> photo) {
-        this.photo = photo;
-    }
-
-    public Sticker getSticker() {
-        return sticker;
-    }
-
-    public void setSticker(Sticker sticker) {
-        this.sticker = sticker;
-    }
-
-    public Video getVideo() {
-        return video;
-    }
-
-    public void setVideo(Video video) {
-        this.video = video;
-    }
-
-    public Voice getVoice() {
-        return voice;
-    }
-
-    public void setVoice(Voice voice) {
-        this.voice = voice;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
-
-    public Contact getContact() {
-        return contact;
-    }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public Venue getVenue() {
-        return venue;
-    }
-
-    public void setVenue(Venue venue) {
-        this.venue = venue;
-    }
-
     public User getNewChatMember() {
         return newChatMember;
     }
@@ -278,14 +154,6 @@ public class Message {
 
     public void setNewChatTitle(String newChatTitle) {
         this.newChatTitle = newChatTitle;
-    }
-
-    public List<PhotoSize> getNewChatPhoto() {
-        return newChatPhoto;
-    }
-
-    public void setNewChatPhoto(List<PhotoSize> newChatPhoto) {
-        this.newChatPhoto = newChatPhoto;
     }
 
     public Boolean getDeleteChatPhoto() {
