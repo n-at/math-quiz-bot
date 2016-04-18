@@ -96,6 +96,9 @@ public class QuizBot extends Bot {
         UUID quizId = UUID.randomUUID();
         quizCollection.put(quizId, quiz);
 
+        logger.info("New quiz {}. Difficulty: {}, Quiz: {}",
+                quizId.toString(), level.toString(), quiz.getQuizString());
+
         //build keyboard
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         List<InlineKeyboardButton> keyboardRow = quiz.getQuizVariants()
@@ -221,7 +224,7 @@ public class QuizBot extends Bot {
      * @return Message text
      */
     public String quizNotFoundMessage() {
-        return "This problem is no longer available " + EmojiManager.getForAlias(":smiley:").getUnicode();
+        return "This problem is no longer available " + EmojiManager.getForAlias(":disappointed:").getUnicode();
     }
 
     /**
