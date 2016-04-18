@@ -13,6 +13,7 @@ import ru.doublebyte.mathquizbot.quiz.QuizVariant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,8 +24,7 @@ public class QuizBot extends Bot {
 
     private static final Logger logger = LoggerFactory.getLogger(QuizBot.class);
 
-    private Map<Long, Quiz> quizCollection = new ConcurrentHashMap<>();
-    private AtomicLong quizIdSequence = new AtomicLong(0);
+    private Map<UUID, Quiz> quizCollection = new ConcurrentHashMap<>();
 
     public QuizBot(String apiUrl, String token) {
         super(apiUrl, token);
@@ -92,7 +92,7 @@ public class QuizBot extends Bot {
 
         //create quiz
         Quiz quiz = new Quiz(level);
-        long quizId = quizIdSequence.incrementAndGet();
+        UUID quizId = UUID.randomUUID();
         quizCollection.put(quizId, quiz);
 
         //build keyboard
@@ -102,7 +102,7 @@ public class QuizBot extends Bot {
         for(QuizVariant variant : quiz.getQuizVariants()) {
             InlineKeyboardButton button = new InlineKeyboardButton();
             button.setText(variant.getName());
-            button.setCallbackData(String.valueOf(quizId) + ":" + variant.getName());
+            button.setCallbackData(quizId.toString() + ":" + variant.getName());
             keyboardRow.add(button);
         }
 
@@ -143,10 +143,10 @@ public class QuizBot extends Bot {
             return;
         }
 
-        Long quizId;
+        UUID quizId;
         String variant;
         try {
-            quizId = Long.decode(parts[0]);
+            quizId = UUID.fromString(parts[0]);
             variant = parts[1];
         } catch(Exception e) {
             logger.warn("Cannot parse answer ({}): {}, chatId: {}, messageId: {}",
