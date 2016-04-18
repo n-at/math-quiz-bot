@@ -1,5 +1,6 @@
 package ru.doublebyte.mathquizbot.bot;
 
+import com.vdurmont.emoji.EmojiManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.doublebyte.mathquizbot.bot.types.*;
@@ -161,7 +162,7 @@ public class QuizBot extends Bot {
         Quiz quiz = quizCollection.get(quizId);
         if(quiz != null) {
             editParams.setText(buildMessageText(quiz, true) +
-                    (quiz.isCorrect(variant) ? "Right!" : "No. Try again?"));
+                    (quiz.isCorrect(variant) ? correctAnswerMessage() : incorrectAnswerMessage()));
             quizCollection.remove(quizId);
         } else {
             editParams.setText(quizNotFoundMessage());
@@ -187,7 +188,7 @@ public class QuizBot extends Bot {
             message.append(variant.toString());
 
             if(markCorrect && variant.getValue() == quiz.getAnswer()) {
-                message.append(" <-");
+                message.append(correctVariantMessage());
             }
 
             message.append("\n");
@@ -220,6 +221,31 @@ public class QuizBot extends Bot {
      * @return Message text
      */
     public String quizNotFoundMessage() {
-        return "This problem is no longer available :(";
+        return "This problem is no longer available " + EmojiManager.getForAlias(":smiley:").getUnicode();
+    }
+
+    /**
+     * Message for correct answer
+     * @return Message text
+     */
+    public String correctAnswerMessage() {
+        return EmojiManager.getForAlias(":smiley:").getUnicode() +
+                EmojiManager.getForAlias(":+1:").getUnicode();
+    }
+
+    /**
+     * Message for incorrect answer
+     * @return Message text
+     */
+    public String incorrectAnswerMessage() {
+        return EmojiManager.getForAlias(":disappointed:").getUnicode();
+    }
+
+    /**
+     * Message for correct variant
+     * @return Message text
+     */
+    public String correctVariantMessage() {
+        return " " + EmojiManager.getForAlias(":heavy_check_mark:").getUnicode();
     }
 }

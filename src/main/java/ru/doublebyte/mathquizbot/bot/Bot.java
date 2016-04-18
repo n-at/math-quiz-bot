@@ -18,6 +18,7 @@ import ru.doublebyte.mathquizbot.bot.types.response.SendMessageResponse;
 import ru.doublebyte.mathquizbot.bot.types.util.EditMessageTextParams;
 import ru.doublebyte.mathquizbot.bot.types.util.SendMessageParams;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class Bot {
@@ -169,7 +170,8 @@ public abstract class Bot {
             String paramsJson = objectMapper.writeValueAsString(params);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            MediaType mediaType = new MediaType("application", "json", StandardCharsets.UTF_8);
+            headers.setContentType(mediaType);
 
             HttpEntity<String> entity = new HttpEntity<>(paramsJson, headers);
 
@@ -218,7 +220,8 @@ public abstract class Bot {
             String paramsJson = objectMapper.writeValueAsString(params);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            MediaType mediaType = new MediaType("application", "json", StandardCharsets.UTF_8);
+            headers.setContentType(mediaType);
 
             HttpEntity<String> entity = new HttpEntity<>(paramsJson, headers);
 
