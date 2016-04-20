@@ -113,11 +113,12 @@ public class Quiz {
         variants.add(answer);
 
         for(int i = 0; i < level.getVariantsCount() - 1; i++) {
-            int nextVariant;
+            int nextVariant, variantsTried = 0;
             do {
                 nextVariant = getRandomInt((int)Math.round(answer - answer * 0.2),
                         (int)Math.round(answer + answer * 0.2));
-            } while(variants.indexOf(nextVariant) != -1);
+                variantsTried++;
+            } while(variants.indexOf(nextVariant) != -1 && variantsTried < 100);
 
             variants.add(nextVariant);
         }
