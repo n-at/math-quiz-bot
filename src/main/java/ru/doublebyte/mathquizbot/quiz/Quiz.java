@@ -114,9 +114,9 @@ public class Quiz {
 
         for(int i = 0; i < level.getVariantsCount() - 1; i++) {
             int nextVariant, variantsTried = 0;
+            int variantLimit = level.getDeviation() / 2;
             do {
-                nextVariant = getRandomInt((int)Math.round(answer - answer * 0.2),
-                        (int)Math.round(answer + answer * 0.2));
+                nextVariant = answer + getRandomInt(-variantLimit, variantLimit);
                 variantsTried++;
             } while(variants.indexOf(nextVariant) != -1 && variantsTried < 100);
 
