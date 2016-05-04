@@ -4,21 +4,53 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Quiz {
 
     private static final Random random = new Random();
 
-    private Level level;
     private List<Integer> numbers;
     private List<Integer> variants;
     private int answer;
 
 
+    private Quiz() {
+
+    }
+
     public Quiz(Level level) {
-        this.level = level;
-        makeQuiz();
-        makeVariants();
+        makeQuiz(level);
+        makeVariants(level);
+    }
+
+    /**
+     * Create quiz from given data
+     * @param numbers Equation numbers
+     * @param variants Answer variants
+     * @param answer Answer
+     * @return Quiz
+     */
+    public static Quiz buildQuiz(List<Integer> numbers, List<Integer> variants, int answer) {
+        if(numbers == null || variants == null) {
+            throw new IllegalArgumentException("Not null arguments expected");
+        }
+
+        int sum = numbers.stream().collect(Collectors.summingInt(it -> it));
+        if(sum != answer) {
+            throw new IllegalArgumentException("Sum of numbers does not equal to answer");
+        }
+
+        boolean hasAnswer = variants.stream().anyMatch(it -> it == answer);
+        if(!hasAnswer) {
+            throw new IllegalArgumentException("Variants does not contain answer");
+        }
+
+        Quiz quiz = new Quiz();
+        quiz.variants = variants;
+        quiz.numbers = numbers;
+        quiz.answer = answer;
+        return quiz;
     }
 
 
@@ -86,8 +118,9 @@ public class Quiz {
 
     /**
      * Make random quiz
+     * @param level Difficulty level
      */
-    private void makeQuiz() {
+    private void makeQuiz(Level level) {
         answer = 0;
 
         numbers = new ArrayList<>();
@@ -102,8 +135,9 @@ public class Quiz {
 
     /**
      * Make variants for quiz
+     * @param level Difficulty level
      */
-    private void makeVariants() {
+    private void makeVariants(Level level) {
         if(numbers == null) {
             return;
         }
@@ -165,11 +199,15 @@ public class Quiz {
 
     ///////////////////////////////////////////////////////////////////////////
 
-    public Level getLevel() {
-        return level;
-    }
-
     public int getAnswer() {
         return answer;
+    }
+
+    public List<Integer> getNumbers() {
+        return numbers;
+    }
+
+    public List<Integer> getVariants() {
+        return variants;
     }
 }

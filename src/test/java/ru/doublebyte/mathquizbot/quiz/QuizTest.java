@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.WrongMethodTypeException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -47,12 +49,6 @@ public class QuizTest {
     }
 
     @Test
-    public void getLevel() throws Exception {
-        Quiz quiz = new Quiz(Level.Medium);
-        assertEquals(Level.Medium, quiz.getLevel());
-    }
-
-    @Test
     public void render() {
         Logger logger = LoggerFactory.getLogger(QuizTest.class);
         logger.info("Testing quiz output");
@@ -63,7 +59,7 @@ public class QuizTest {
         simpleQuiz.getQuizVariants().forEach(it -> logger.info(it.toString()));
 
         Quiz mediumQuiz = new Quiz(Level.Medium);
-        logger.info("Meduim quiz");
+        logger.info("Medium quiz");
         logger.info(mediumQuiz.getQuizString());
         mediumQuiz.getQuizVariants().forEach(it -> logger.info(it.toString()));
 
@@ -71,6 +67,58 @@ public class QuizTest {
         logger.info("Hard quiz");
         logger.info(hardQuiz.getQuizString());
         hardQuiz.getQuizVariants().forEach(it -> logger.info(it.toString()));
+    }
+
+    @Test
+    public void testBuildQuiz() {
+        List<Integer> numbers = Arrays.asList(1, 2, 3);
+        List<Integer> variants = Arrays.asList(5, 6, 7, 8);
+        int answer = 6;
+
+        try {
+            Quiz quiz = Quiz.buildQuiz(numbers, variants, answer);
+            assertNotNull(quiz);
+            assertEquals(answer, quiz.getAnswer());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            Quiz.buildQuiz(null, variants, answer);
+            fail("Must throw");
+        } catch(IllegalArgumentException ignored) {
+
+        } catch(Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            Quiz.buildQuiz(numbers, null, answer);
+            fail("Must throw");
+        } catch(IllegalArgumentException ignored) {
+
+        } catch(Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            Quiz.buildQuiz(numbers, variants, 5);
+            fail("Must throw");
+        } catch(IllegalArgumentException ignored) {
+
+        } catch(Exception e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            List<Integer> wrongVariants = Arrays.asList(10, 20, 30, 40);
+            Quiz.buildQuiz(numbers, wrongVariants, answer);
+            fail("Must throw");
+        } catch(IllegalArgumentException ignored) {
+
+        } catch(Exception e) {
+            fail(e.getMessage());
+        }
     }
 
 }
