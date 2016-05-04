@@ -2,3 +2,4 @@
 target/
 *.iml
 application.properties
+quizdb.*

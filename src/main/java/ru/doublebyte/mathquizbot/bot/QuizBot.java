@@ -3,6 +3,7 @@ package ru.doublebyte.mathquizbot.bot;
 import com.vdurmont.emoji.EmojiManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.doublebyte.mathquizbot.QuizService;
 import ru.doublebyte.mathquizbot.bot.types.*;
 import ru.doublebyte.mathquizbot.bot.types.mediaentity.Chat;
 import ru.doublebyte.mathquizbot.bot.types.util.EditMessageTextParams;
@@ -13,9 +14,7 @@ import ru.doublebyte.mathquizbot.quiz.QuizVariant;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -25,10 +24,11 @@ public class QuizBot extends Bot {
 
     private static final Logger logger = LoggerFactory.getLogger(QuizBot.class);
 
-    private Map<UUID, Quiz> quizCollection = new ConcurrentHashMap<>();
+    private QuizService quizService;
 
-    public QuizBot(String apiUrl, String token) {
+    public QuizBot(String apiUrl, String token, QuizService quizService) {
         super(apiUrl, token);
+        this.quizService = quizService;
     }
 
     /**
@@ -94,7 +94,7 @@ public class QuizBot extends Bot {
         //create quiz
         Quiz quiz = new Quiz(level);
         UUID quizId = UUID.randomUUID();
-        quizCollection.put(quizId, quiz);
+        quizService.save(quizId, quiz);
 
         logger.info("New quiz {}. Difficulty: {}, Quiz: {}",
                 quizId.toString(), level.toString(), quiz.getQuizString());
@@ -162,11 +162,10 @@ public class QuizBot extends Bot {
         editParams.setMessageId(messageId);
         editParams.setReplyMarkup(InlineKeyboardMarkup.emptyKeyboardMarkup());
 
-        Quiz quiz = quizCollection.get(quizId);
+        Quiz quiz = quizService.getById(quizId);
         if(quiz != null) {
             editParams.setText(buildMessageText(quiz, true) +
                     (quiz.isCorrect(variant) ? correctAnswerMessage() : incorrectAnswerMessage()));
-            quizCollection.remove(quizId);
         } else {
             editParams.setText(quizNotFoundMessage());
             logger.warn("Quiz not found: {}", quizId);
