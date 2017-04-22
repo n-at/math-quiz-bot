@@ -12,8 +12,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
+        <version>1.5.3.RELEASE</version>
     </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <emoji-java.version>3.1.0</emoji-java.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -50,11 +55,6 @@
             <version>${emoji-java.version}</version>
         </dependency>
     </dependencies>
-
-    <properties>
-        <java.version>1.8</java.version>
-        <emoji-java.version>3.1.0</emoji-java.version>
-    </properties>
 
     <build>
         <plugins>
