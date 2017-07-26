@@ -8,9 +8,9 @@ Uses [Bot API 2.0](https://core.telegram.org/bots/api/).
 Building
 --------
 
-You need JDK >= 1.8 and maven >= 3
+You need JDK >= 1.8
 
-    $ mvn clean package
+    $ ./mvnw clean package
 
 Running
 -------
@@ -20,7 +20,7 @@ See `application.sample.properties` for example configuration.
 
 Run:
 
-    $ java -jar math-quiz-bot-1.0.jar
+    $ java -Xmx32m -jar math-quiz-bot.jar
 
 License
 -------
